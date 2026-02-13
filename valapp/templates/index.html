@@ -1,0 +1,152 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LoveNote | Celebrate Love</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        roseDark: "#0f0a14",
+        rosePrimary: "#e11d48",
+        roseSoft: "#fb7185",
+        gold: "#fbbf24"
+      },
+      fontFamily: {
+        heading: ['Playfair Display', 'serif'],
+        body: ['Inter', 'sans-serif']
+      }
+    }
+  }
+}
+</script>
+
+<style>
+body {
+  font-family: 'Inter', sans-serif;
+  background: radial-gradient(circle at 20% 30%, rgba(225,29,72,0.15), transparent 40%),
+              radial-gradient(circle at 80% 70%, rgba(251,191,36,0.08), transparent 40%),
+              #0f0a14;
+  color: #fff;
+}
+
+/* Soft glow button */
+.btn-romantic {
+  background: linear-gradient(135deg, #e11d48, #fb7185);
+  box-shadow: 0 10px 30px rgba(225,29,72,0.4);
+  transition: all 0.3s ease;
+}
+
+.btn-romantic:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 40px rgba(225,29,72,0.6);
+}
+
+/* Glass card */
+.romantic-card {
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: 0.4s ease;
+}
+
+.romantic-card:hover {
+  border-color: rgba(251,113,133,0.6);
+  transform: translateY(-8px);
+}
+</style>
+</head>
+
+<body class="antialiased">
+
+<!-- NAV -->
+<header class="py-6 px-6 max-w-7xl mx-auto flex justify-between items-center">
+  <a href="{% url 'index' %}" class="text-2xl font-heading font-semibold tracking-wide">
+    💌 LoveNote
+  </a>
+  <a href="{% url 'create_message' %}"
+     class="btn-romantic text-white px-6 py-2.5 rounded-full font-medium">
+     Create Note
+  </a>
+</header>
+
+<!-- HERO -->
+<section class="py-32 text-center px-6">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="font-heading text-5xl md:text-7xl font-bold leading-tight">
+      Celebrate Love.<br>
+      <span class="text-roseSoft">Create Moments That Last.</span>
+    </h1>
+
+    <p class="mt-8 text-lg text-gray-300 max-w-2xl mx-auto">
+      Craft heartfelt digital love notes for anniversaries, birthdays,
+      Valentine’s Day, and every beautiful moment in between.
+    </p>
+
+    <div class="mt-10">
+      <a href="{% url 'create_message' %}"
+         class="btn-romantic text-white px-10 py-4 rounded-full text-lg font-semibold">
+         ✨ Start Writing
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- OCCASIONS -->
+<section class="py-24 px-6">
+  <div class="max-w-6xl mx-auto text-center mb-16">
+    <h2 class="font-heading text-4xl md:text-5xl font-semibold">
+      Perfect for Every Romantic Occasion
+    </h2>
+  </div>
+
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+    {% for occasion in occasions %}
+    <a href="{% url 'create_message' %}?occasion={{ occasion }}"
+       class="romantic-card rounded-3xl p-10 text-center">
+        <div class="text-5xl mb-4">
+          {% if occasion == "Valentine" %}💕{% endif %}
+          {% if occasion == "Anniversary" %}💍{% endif %}
+          {% if occasion == "Birthday" %}🎂{% endif %}
+          {% if occasion == "Christmas" %}🎄{% endif %}
+          {% if occasion == "New Year" %}🎆{% endif %}
+          {% if occasion == "Easter" %}🌸{% endif %}
+        </div>
+        <h3 class="font-heading text-2xl">{{ occasion }}</h3>
+        <p class="mt-3 text-gray-400 text-sm">
+          Create a heartfelt message for {{ occasion }}.
+        </p>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- LOVE MESSAGE SECTION -->
+<section class="py-32 text-center">
+  <div class="max-w-3xl mx-auto px-6">
+    <h2 class="font-heading text-4xl md:text-5xl font-semibold">
+      Because Words Matter
+    </h2>
+    <p class="mt-6 text-gray-400 text-lg">
+      A simple message can spark joy, strengthen bonds,
+      and create memories that last forever.
+    </p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="py-10 text-center text-gray-500 text-sm">
+   Made with ❤️ By NECTA TECH for celebrating love and connection
+</footer>
+
+</body>
+</html>
