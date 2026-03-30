@@ -1,0 +1,227 @@
+/* Home page styles */
+.hero-section {
+  padding: 8rem 1.5rem;
+  text-align: center;
+  position: relative;
+}
+
+.hero-container {
+  max-width: 56rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-title {
+  font-family: var(--font-heading);
+  font-size: 3.75rem;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+  margin-bottom: 2rem;
+  filter: drop-shadow(0 10px 8px rgba(0, 0, 0, 0.1));
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  background-image: linear-gradient(to bottom, #ffffff, rgba(255, 255, 255, 0.8));
+}
+
+@media (min-width: 768px) {
+  .hero-title {
+    font-size: 5.5rem;
+  }
+}
+
+.hero-title-accent {
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  background-image: linear-gradient(to right, #ff4d6d, #ff8fa3);
+  filter: drop-shadow(0 0 15px rgba(255, 77, 109, 0.5));
+}
+
+.hero-subtitle {
+  margin-top: 1rem;
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 42rem;
+  margin-left: auto;
+  margin-right: auto;
+  font-weight: 400;
+  line-height: 1.625;
+  letter-spacing: 0.025em;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+@media (min-width: 768px) {
+  .hero-subtitle {
+    font-size: 1.25rem;
+  }
+}
+
+.hero-cta-container {
+  margin-top: 3rem;
+}
+
+.section-padding {
+  padding: 8rem 1.5rem;
+}
+
+.container-6xl {
+  max-width: 72rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 5rem;
+  position: relative;
+}
+
+.section-title {
+  font-family: var(--font-heading);
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 4px 3px rgba(0, 0, 0, 0.07));
+}
+
+@media (min-width: 768px) {
+  .section-title {
+    font-size: 3.75rem;
+  }
+}
+
+.section-subtitle {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: 0.025em;
+}
+
+.grid-occasions {
+  display: grid;
+  gap: 2rem;
+  max-width: 72rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 640px) {
+  .grid-occasions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-occasions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.occasion-card {
+  padding: 2.5rem;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+}
+
+.occasion-card:hover {
+  transform: scale(1.05);
+}
+
+.occasion-icon {
+  font-size: 3.75rem;
+  margin-bottom: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.occasion-card:hover .occasion-icon {
+  transform: scale(1.25);
+}
+
+.occasion-title {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .occasion-title {
+    font-size: 1.875rem;
+  }
+}
+
+.occasion-desc {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.875rem;
+  line-height: 1.625;
+}
+
+@media (min-width: 768px) {
+  .occasion-desc {
+    font-size: 1rem;
+  }
+}
+
+.promo-section {
+  padding: 8rem 1.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.promo-container {
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.promo-title {
+  font-family: var(--font-heading);
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .promo-title {
+    font-size: 4rem;
+  }
+}
+
+.promo-text {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+  line-height: 1.625;
+  max-width: 36rem;
+  margin-left: auto;
+  margin-right: auto;
+  font-weight: 500;
+}
+
+@media (min-width: 768px) {
+  .promo-text {
+    font-size: 1.25rem;
+  }
+}
+
+.bg-blur-effect {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: -10;
+  filter: blur(80px);
+  opacity: 0.3;
+}
+
+.bg-blur-circle {
+  width: 16rem;
+  height: 16rem;
+  background-color: var(--rose-primary);
+  border-radius: 9999px;
+}

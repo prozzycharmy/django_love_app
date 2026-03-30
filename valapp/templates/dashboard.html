@@ -1,0 +1,151 @@
+{% extends 'generic.html' %}
+{% load static %}
+
+{% block title %}Dashboard | LoveNote{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'valapp/css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div>
+            <h1 class="dashboard-title">Your Dashboard</h1>
+            <p class="dashboard-subtitle">Manage your anonymous links and messages</p>
+        </div>
+    </div>
+
+    <!-- Active Links Section -->
+    <div class="section-margin">
+        <h2 class="section-title-group">
+            <span class="section-icon">🚀</span> Your Active Links
+        </h2>
+        
+        {% if user_links %}
+        <div class="grid-dashboard">
+            {% for link in user_links %}
+            <div class="link-card romantic-card" style="border-left-color: {{ link.link_type.color_gradient|truncatechars:20 }}">
+                <div class="link-card-header">
+                    <span class="link-card-icon">{{ link.link_type.icon }}</span>
+                    <span class="link-card-badge">
+                        {{ link.received_messages.count }} Messages
+                    </span>
+                </div>
+                <h3 class="link-card-title">{{ link.link_type.name }}</h3>
+                <p class="link-card-desc">{{ link.link_type.prompt }}</p>
+                
+                <div class="link-copy-group">
+                    <div class="link-input-wrapper">
+                        <input type="text" readonly value="{{ request.get_host }}{% url 'send_anonymous_message' link.short_code %}" 
+                               id="link-{{ link.id }}"
+                               class="link-copy-input">
+                        <button onclick="copyLink('link-{{ link.id }}')" class="btn-copy-link" title="Copy Link">
+                            📋
+                        </button>
+                    </div>
+                    <a href="{% url 'received_messages' link.id %}" class="btn-romantic w-full py-3 rounded-xl text-center text-white font-bold text-sm block">
+                        View Messages
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <p class="empty-state-text">You haven't created any links yet.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Saved Previews Section -->
+    <div class="section-margin">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="section-title-group m-0">
+                <span class="section-icon">💝</span> Your Saved Previews
+            </h2>
+            <a href="{% url 'all_previews' %}" class="text-roseSoft hover:text-rosePrimary transition-colors font-semibold">
+                See All Previews →
+            </a>
+        </div>
+        
+        {% if recent_previews %}
+        <div class="grid-dashboard">
+            {% for preview in recent_previews %}
+            <div class="link-card romantic-card">
+                <div class="link-card-header">
+                    <span class="badge-occasion">
+                        {{ preview.occasion }}
+                    </span>
+                    <span class="text-roseSoft/50 text-xs">
+                        {{ preview.date_created|date:"M d, Y" }}
+                    </span>
+                </div>
+                <h3 class="link-card-title mt-4">To: {{ preview.recipient }}</h3>
+                <p class="link-card-desc line-clamp-2">{{ preview.message }}</p>
+                
+                <div class="link-copy-group flex-row gap-2">
+                    <a href="{% url 'preview_message' preview.slug %}" target="_blank" class="btn-romantic flex-1 py-3 rounded-xl text-center text-white font-bold text-sm block">
+                        👁️ Open
+                    </a>
+                    <button onclick="copyRaw('{{ request.get_host }}{% url 'preview_message' preview.slug %}')" class="btn-romantic bg-white/10 hover:bg-white/20 flex-1 py-3 rounded-xl text-center text-white font-bold text-sm block">
+                        📋 Copy
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <p class="empty-state-text">You haven't created any love notes yet.</p>
+            <a href="{% url 'create_message' %}" class="btn-romantic inline-block mt-4 px-6 py-3 rounded-xl text-white font-bold">
+                Create Your First Note
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Create New Links Section -->
+    {% if available_link_types %}
+    <div>
+        <h2 class="section-title-group">
+            <span class="section-icon">✨</span> Create New Link
+        </h2>
+        <div class="grid-small-cards">
+            {% for type in available_link_types %}
+            <a href="{% url 'create_link' type.id %}" class="new-link-card">
+                <div class="new-link-icon">{{ type.icon }}</div>
+                <h3 class="new-link-title">{{ type.name }}</h3>
+                <p class="new-link-desc">{{ type.prompt }}</p>
+                <div class="new-link-cta">
+                    Create Now <span class="ml-2">→</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function copyLink(id) {
+    var copyText = document.getElementById(id);
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(copyText.value);
+    
+    // Simple visual feedback
+    const btn = event.currentTarget;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '✅';
+    setTimeout(() => {
+        btn.innerHTML = originalText;
+    }, 2000);
+}
+
+function copyRaw(text) {
+    navigator.clipboard.writeText(text);
+    alert("Link copied! 💕");
+}
+</script>
+{% endblock %}

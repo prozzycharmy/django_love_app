@@ -1,238 +1,251 @@
+{% extends "generic.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Your Love Note - LoveNote</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+{% block title %}Your Love Note - LoveNote{% endblock %}
 
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-tailwind.config = {
-    theme: {
-        extend: {
-            colors: {
-                rosepink: '#E91E63',
-                lightpink: '#F48FB1',
-                deeppink: '#C2185B',
-                lavenderblush: '#FFF0F5',
-                darkgray: '#2D2D2D',
-                gold: '#FFD700'
-            },
-            fontFamily: {
-                heading: ['Playfair Display', 'serif'],
-                body: ['Quicksand', 'sans-serif']
-            }
-        }
-    }
-}
-</script>
-
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'valapp/css/messages.css' %}">
 <style>
-body {
-    font-family: 'Quicksand', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-    background: radial-gradient(circle at top left, rgba(225,29,72,0.1), transparent 50%),
-                radial-gradient(circle at bottom right, rgba(255,215,0,0.08), transparent 50%),
-                #0f0a14;
-    color: white;
-    position: relative;
-}
-
-/* Floating Hearts */
-.hearts-container {
+  /* Base styles for falling elements */
+  .animation-container {
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    pointer-events: none; overflow: hidden; z-index: 0;
-}
-.heart {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+    overflow: hidden;
+  }
+  .falling-element {
     position: absolute;
-    font-size: 20px;
-    animation: floatUp linear infinite;
-    opacity: 0.6;
-}
-@keyframes floatUp {
-    0% { transform: translateY(100vh) scale(0); opacity: 0; }
-    10% { opacity: 0.7; }
-    90% { opacity: 0.7; }
-    100% { transform: translateY(-120px) scale(1); opacity: 0; }
-}
+    user-select: none;
+    pointer-events: none;
+  }
 
-/* Card */
-.message-card {
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 2rem;
-    padding: 2rem;
-    transition: all 0.3s ease;
-    box-shadow: 0 15px 40px rgba(255,255,255,0.05);
-}
-.message-card:hover {
-    transform: scale(1.03);
-    box-shadow: 0 25px 60px rgba(255,215,0,0.2);
-}
+  /* Photo styling */
+  .message-photo-wrapper {
+    margin-bottom: 2rem;
+    border-radius: 1rem;
+    overflow: hidden;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    animation: fadeInScale 1s ease-out;
+    position: relative;
+    width: 100%;
+    max-height: 400px;
+  }
+  .slider-container {
+    display: flex;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 100%;
+    width: 100%;
+  }
+  .message-photo {
+    width: 100%;
+    height: 100%;
+    display: block;
+    flex-shrink: 0;
+    object-fit: cover;
+    max-height: 400px;
+  }
 
-/* Soft glow button */
-.btn-romantic {
-  background: linear-gradient(135deg, #e11d48, #fb7185);
-  box-shadow: 0 10px 30px rgba(225,29,72,0.4);
-  transition: all 0.3s ease;
-}
+  @keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
 
-.btn-romantic:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 20px 40px rgba(225,29,72,0.6);
-}
+  /* Specific Animations */
+  @keyframes floatUp {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.8; }
+    90% { opacity: 0.8; }
+    100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+  }
 
-/* Occasion Badge */
-.occur-badge {
-    display: inline-block;
-    px-4 py-2 rounded-full font-semibold text-sm;
-    background: rgba(255,255,255,0.2);
-    color: #fff;
-}
+  @keyframes fallDown {
+    0% { transform: translateY(-100px) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+  }
 
-/* Theme Badge */
-.theme-badge {
-    display: inline-block; padding: 0.25rem 0.75rem;
-    background: rgba(255,255,255,0.15); color: #fff;
-    border-radius: 9999px; font-size: 0.75rem; font-weight: 500;
-}
-
-/* Buttons */
-.btn-primary {
-    background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);
-    transition: all 0.3s ease;
-}
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(225,29,72,0.4); }
-
-.btn-whatsapp { background: #25D366; transition: all 0.3s ease; }
-.btn-whatsapp:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(37,211,102,0.4); }
-
-.btn-facebook { background: #1877F2; transition: all 0.3s ease; }
-.btn-facebook:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(24,119,242,0.4); }
+  @keyframes firework {
+    0% { transform: scale(0); opacity: 1; }
+    100% { transform: scale(1.5); opacity: 0; }
+  }
 </style>
-</head>
+{% endblock %}
 
-<body id="body">
-<!-- Floating Hearts -->
-<div class="hearts-container" id="heartsContainer"></div>
-
-<!-- Header -->
-<header class="py-6 px-6 max-w-7xl mx-auto flex justify-between items-center">
-  <a href="{% url 'index' %}" class="text-2xl font-heading font-semibold tracking-wide">
-    💌 LoveNote
-  </a>
-  <a href="{% url 'create_message' %}"
-     class="btn-romantic text-white px-6 py-2.5 rounded-full font-medium">
-     Create Note
-  </a>
-</header>
+{% block content %}
+<!-- Unique Animation Container -->
+<div class="animation-container" id="animationContainer"></div>
 
 <!-- Message Preview -->
-<!-- LOVE NOTE SECTION -->
-<main class="flex-grow py-12 px-4">
-  <div class="max-w-3xl mx-auto">
+<main class="message-page-padding">
+  <div class="message-container-narrow">
     <!-- Title -->
-    <div class="text-center mb-10">
-      <h1 class="font-heading text-5xl md:text-6xl font-bold text-white drop-shadow-lg mb-2">
-        Your Love Note
+    <div class="message-page-header">
+      <h1 class="message-page-title">
+        Special Message
       </h1>
-      <p class="text-roseSoft/80 text-lg md:text-xl drop-shadow">
-        Share a heartfelt message with someone special 💖
+      <p class="message-page-subtitle">
+        A heartfelt note created just for you 💝
       </p>
     </div>
 
     <!-- Card -->
-    <div class="relative message-card p-8 rounded-3xl bg-gradient-to-br from-rosepink/20 via-lightpink/10 to-rosepink/10 shadow-2xl">
+    <div class="display-card">
       
       <!-- Occasion -->
       <div class="mb-6 text-center">
-        <span class="occur-badge bg-rosepink/40 text-white/90 px-5 py-2 rounded-full text-sm font-semibold shadow-md">
+        <span class="badge-occasion">
           {{ message.occasion }}
         </span>
       </div>
 
-      <!-- From & To -->
-      <div class="flex flex-col sm:flex-row justify-between items-center mb-6 text-white/90 gap-6">
-        <div class="text-center">
-          <p class="text-sm text-white/70 uppercase tracking-wider">From</p>
-          <p class="text-lg md:text-xl font-semibold">{{ message.sender }}</p>
+      <!-- Photo Display (If exists) -->
+      {% if message.photo or message.photos.exists %}
+      <div class="message-photo-wrapper">
+        <div class="slider-container" id="photoSlider">
+          {% if message.photo %}
+          <img src="{{ message.photo.url }}" alt="Photo" class="message-photo">
+          {% endif %}
+          {% for p in message.photos.all %}
+          <img src="{{ p.image.url }}" alt="Photo" class="message-photo">
+          {% endfor %}
         </div>
-        <span class="text-4xl animate-pulse">💞</span>
-        <div class="text-center">
-          <p class="text-sm text-white/70 uppercase tracking-wider">To</p>
-          <p class="text-lg md:text-xl font-semibold">{{ message.recipient }}</p>
+      </div>
+      {% endif %}
+
+      <!-- From & To -->
+      <div class="sender-recipient-grid">
+        <div class="sender-info">
+          <p class="info-label">From</p>
+          <p class="info-name">{{ message.sender }}</p>
+        </div>
+        <div class="grid-divider" id="occasionIcon">💝</div>
+        <div class="recipient-info">
+          <p class="info-label">To</p>
+          <p class="info-name">{{ message.recipient }}</p>
         </div>
       </div>
 
       <!-- Message -->
-      <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-6 text-white/90 text-lg md:text-xl leading-relaxed whitespace-pre-wrap shadow-inner">
+      <div class="message-body">
         {{ message.message }}
       </div>
 
       <!-- Theme & Date -->
-      <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
-        <span class="theme-badge bg-rosepink/30 text-white/90 px-4 py-1 rounded-full font-medium shadow-sm">
+      <div class="message-footer-meta">
+        <span class="badge-theme">
           Theme: {{ message.theme }}
         </span>
-        <span class="text-white/60 text-sm md:text-base">
+        <span class="font-light">
           Created on {{ message.date_created|date:"F j, Y" }}
         </span>
       </div>
     </div>
 
     <!-- Share & Actions -->
-    <div class="mt-8 flex flex-col sm:flex-row gap-4">
-      <input type="text" id="shareLink" value="{{ request.build_absolute_uri }}" readonly
-             class="flex-1 px-5 py-3 rounded-xl border border-white/20 bg-white/10 text-white/90 focus:outline-none focus:ring-2 focus:ring-rosepink/50">
-      <button onclick="copyLink()" class="btn-romantic w-full sm:w-auto px-6 py-3 font-semibold text-white text-lg rounded-xl">
-        📋 Copy Link
-      </button>
+    <div class="action-container">
+      <div class="share-input-group">
+        <input type="text" id="shareLink" value="{{ request.build_absolute_uri }}" readonly class="share-link-input">
+        <button onclick="copyLink()" class="btn-romantic text-white px-8 py-4 rounded-xl font-semibold whitespace-nowrap">
+          📋 Copy Link
+        </button>
+      </div>
+      
+      <div class="social-share-grid">
+        <button onclick="shareWhatsApp()" class="btn-whatsapp">
+          💬 WhatsApp
+        </button>
+        <button onclick="shareFacebook()" class="btn-facebook">
+          📘 Facebook
+        </button>
+      </div>
+
+      <a href="{% url 'create_message' %}" class="mt-2 block btn-romantic text-white py-4 rounded-xl font-semibold text-lg text-center w-full">
+        ✨ Create Another Note
+      </a>
     </div>
-    <div class="mt-4 flex flex-col sm:flex-row gap-4">
-      <button onclick="shareWhatsApp()" class="btn-whatsapp flex-1 py-3 rounded-xl font-semibold text-white text-lg">
-        💬 WhatsApp
-      </button>
-      <button onclick="shareFacebook()" class="btn-facebook flex-1 py-3 rounded-xl font-semibold text-white text-lg">
-        📘 Facebook
-      </button>
-    </div>
-    <a href="{% url 'create_message' %}" class="block mt-6 btn-romantic py-3 rounded-xl font-semibold text-white text-lg text-center">
-      ✨ Create Another Note
-    </a>
   </div>
 </main>
+{% endblock %}
 
-
-<!-- Footer -->
-<footer class="bg-darkgray text-white py-6 text-center">
-    Made with ❤️ By NECTA TECH for celebrating love and connection
-</footer>
-
+{% block extra_js %}
 <script>
-// Floating Hearts
-function createFloatingHearts(count) {
-    const container = document.getElementById('heartsContainer');
-    const hearts = ['💞','💕','💗','💖','💘','❤️','💝'];
-    for (let i=0;i<count;i++){
-        setTimeout(()=>{
-            const h=document.createElement('div');
-            h.className='heart';
-            h.innerHTML=hearts[Math.floor(Math.random()*hearts.length)];
-            h.style.left=Math.random()*100+'%';
-            h.style.fontSize=(15+Math.random()*25)+'px';
-            h.style.animationDuration=(5+Math.random()*5)+'s';
-            container.appendChild(h);
-            setTimeout(()=>{h.remove(); createFloatingHearts(1);},8000);
-        }, i*300);
+const occasion = "{{ message.occasion }}";
+const container = document.getElementById('animationContainer');
+const occasionIcon = document.getElementById('occasionIcon');
+
+function createAnimation() {
+    let emojiPool = [];
+    let animationType = 'floatUp'; // 'floatUp' or 'fallDown'
+    let count = 30;
+
+    switch(occasion) {
+        case 'Valentine':
+            emojiPool = ['❤️', '💖', '💝', '💕', '🌹'];
+            animationType = 'floatUp';
+            occasionIcon.innerHTML = '💖';
+            break;
+        case 'New Year':
+            emojiPool = ['🎆', '✨', '🍾', '🥳', '🎊'];
+            animationType = 'floatUp';
+            occasionIcon.innerHTML = '🥂';
+            break;
+        case 'Easter':
+            emojiPool = ['✨', '💖', '⭐', '🌸', '🌷'];
+            animationType = 'floatUp';
+            occasionIcon.innerHTML = '✨';
+            break;
+        case 'Christmas':
+            emojiPool = ['❄️', '🎄', '🎁', '⛄', '🎅'];
+            animationType = 'fallDown';
+            occasionIcon.innerHTML = '🎄';
+            break;
+        case 'Birthday':
+            emojiPool = ['🎈', '🎂', '🎁', '🎉', '🧁'];
+            animationType = 'floatUp';
+            occasionIcon.innerHTML = '🎂';
+            break;
+        case 'Anniversary':
+            emojiPool = ['💍', '💎', '✨', '🥂', '💑'];
+            animationType = 'floatUp';
+            occasionIcon.innerHTML = '💍';
+            break;
+        case "Eid'l fitr":
+        case "Eid'l mubarak":
+            emojiPool = ['🌙', '⭐', '🕌', '✨', '🎁'];
+            animationType = 'floatUp';
+            occasionIcon.innerHTML = '🌙';
+            break;
+        default:
+            emojiPool = ['✨', '⭐', '💫'];
+            animationType = 'floatUp';
     }
+
+    for (let i = 0; i < count; i++) {
+        spawnElement(emojiPool, animationType);
+    }
+}
+
+function spawnElement(pool, type) {
+    const el = document.createElement('div');
+    el.className = 'falling-element';
+    el.innerHTML = pool[Math.floor(Math.random() * pool.length)];
+    
+    const startX = Math.random() * 100;
+    const duration = 5 + Math.random() * 10;
+    const delay = Math.random() * 5;
+    const size = 15 + Math.random() * 25;
+
+    el.style.left = startX + '%';
+    el.style.fontSize = size + 'px';
+    el.style.animation = `${type} ${duration}s linear ${delay}s infinite`;
+    
+    container.appendChild(el);
 }
 
 // Copy Link
@@ -240,13 +253,13 @@ function copyLink() {
     const link = document.getElementById('shareLink');
     link.select();
     navigator.clipboard.writeText(link.value);
-    alert("Link copied!");
+    alert("Link copied! 💕");
 }
 
 // Share Functions
 function shareWhatsApp() {
     const link = encodeURIComponent(document.getElementById('shareLink').value);
-    const text = encodeURIComponent("💖 Here's a special love note: ");
+    const text = encodeURIComponent("💖 Here's a special message: ");
     window.open(`https://wa.me/?text=${text}${link}`, "_blank");
 }
 function shareFacebook() {
@@ -254,7 +267,25 @@ function shareFacebook() {
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${link}`, "_blank");
 }
 
-document.addEventListener('DOMContentLoaded',()=>{ createFloatingHearts(20); });
+function startPhotoSlider() {
+    const slider = document.getElementById('photoSlider');
+    if (!slider) return;
+    
+    const photos = slider.getElementsByTagName('img');
+    if (photos.length <= 1) return;
+    
+    let currentIndex = 0;
+    const totalPhotos = photos.length;
+    
+    setInterval(() => {
+        currentIndex = (currentIndex + 1) % totalPhotos;
+        slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+    }, 3000);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    createAnimation();
+    startPhotoSlider();
+});
 </script>
-</body>
-</html>
+{% endblock %}

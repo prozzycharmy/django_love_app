@@ -1,0 +1,68 @@
+{% extends 'generic.html' %}
+{% load static %}
+
+{% block title %}All Previews | LoveNote{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'valapp/css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div class="flex items-center gap-4">
+            <a href="{% url 'dashboard' %}" class="text-roseSoft hover:text-rosePrimary transition-colors text-2xl">
+                ←
+            </a>
+            <div>
+                <h1 class="dashboard-title">All Your Previews</h1>
+                <p class="dashboard-subtitle">A collection of every special message you've created</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-margin">
+        {% if previews %}
+        <div class="grid-dashboard">
+            {% for preview in previews %}
+            <div class="link-card romantic-card">
+                <div class="link-card-header">
+                    <span class="badge-occasion">
+                        {{ preview.occasion }}
+                    </span>
+                    <span class="text-roseSoft/50 text-xs">
+                        {{ preview.date_created|date:"M d, Y" }}
+                    </span>
+                </div>
+                <h3 class="link-card-title mt-4">To: {{ preview.recipient }}</h3>
+                <p class="link-card-desc">{{ preview.message|truncatechars:150 }}</p>
+                
+                <div class="link-copy-group flex-row gap-2">
+                    <a href="{% url 'preview_message' preview.slug %}" target="_blank" class="btn-romantic flex-1 py-3 rounded-xl text-center text-white font-bold text-sm block">
+                        👁️ Open
+                    </a>
+                    <button onclick="copyRaw('{{ request.get_host }}{% url 'preview_message' preview.slug %}')" class="btn-romantic bg-white/10 hover:bg-white/20 flex-1 py-3 rounded-xl text-center text-white font-bold text-sm block">
+                        📋 Copy
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <p class="empty-state-text">You haven't created any love notes yet.</p>
+            <a href="{% url 'create_message' %}" class="btn-romantic inline-block mt-4 px-6 py-3 rounded-xl text-white font-bold">
+                Create Your First Note
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function copyRaw(text) {
+    navigator.clipboard.writeText(text);
+    alert("Link copied! 💕");
+}
+</script>
+{% endblock %}

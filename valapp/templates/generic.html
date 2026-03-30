@@ -1,0 +1,289 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LoveNote | Celebrate Love{% endblock %}</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'valapp/css/style.css' %}">
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="main-header">
+      <a href="{% url 'index' %}" class="header-logo">
+        <span class="text-rosePrimary">💌</span> LoveNote
+      </a>
+      
+      <!-- Desktop Nav -->
+      <div class="header-nav desktop-only">
+        {% if user.is_authenticated %}
+          <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
+          <span class="nav-greeting">Hello, {{ user.get_short_name }}</span>
+          <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+        {% else %}
+          <a href="{% url 'login' %}" class="nav-link">Login</a>
+          <a href="{% url 'register' %}" class="nav-link">Register</a>
+        {% endif %}
+        <a href="{% url 'create_message' %}" class="btn-outline-romantic">
+           Create Note
+        </a>
+      </div>
+
+      <!-- Mobile Hamburger -->
+      <button class="mobile-menu-btn mobile-only" id="menuToggle" aria-label="Toggle Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+      </button>
+    </header>
+
+    <!-- Mobile Navigation Drawer -->
+    <div class="mobile-nav-drawer" id="navDrawer">
+        <div class="drawer-header">
+            <a href="{% url 'index' %}" class="header-logo">
+                <span class="text-rosePrimary">💌</span> LoveNote
+            </a>
+            <button class="close-drawer" id="closeDrawer">&times;</button>
+        </div>
+        <div class="drawer-links">
+            {% if user.is_authenticated %}
+              <div class="drawer-greeting">Hello, {{ user.get_short_name }}</div>
+              <a href="{% url 'dashboard' %}" class="drawer-link">Dashboard</a>
+              <a href="{% url 'create_message' %}" class="drawer-link">Create Note</a>
+              <a href="{% url 'logout' %}" class="drawer-link logout-link">Logout</a>
+            {% else %}
+              <a href="{% url 'login' %}" class="drawer-link">Login</a>
+              <a href="{% url 'register' %}" class="drawer-link">Register</a>
+              <a href="{% url 'create_message' %}" class="drawer-link">Create Note</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+
+    <style>
+        /* Modern Mobile Menu System */
+        .mobile-only { 
+            display: none !important; 
+        }
+        
+        .desktop-only { 
+            display: flex !important; 
+        }
+
+        @media (max-width: 768px) {
+            .mobile-only { 
+                display: flex !important; 
+            }
+            
+            .desktop-only { 
+                display: none !important; 
+            }
+            
+            .main-header {
+                padding: 1.25rem 1rem;
+            }
+        }
+
+        .mobile-menu-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding: 10px;
+            border-radius: 12px;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-btn:active {
+            transform: scale(0.9);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-menu-btn span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+        }
+
+        /* Drawer Styles */
+        .mobile-nav-drawer {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            max-width: 300px;
+            height: 100%;
+            background: #1c1221;
+            z-index: 2000;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            border-left: 1px solid rgba(244, 90, 117, 0.1);
+        }
+
+        .mobile-nav-drawer.active {
+            right: 0;
+        }
+
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .close-drawer {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2.5rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .drawer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .drawer-link {
+            color: white;
+            text-decoration: none;
+            font-size: 1.25rem;
+            font-weight: 600;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: color 0.3s;
+        }
+
+        .drawer-link:hover {
+            color: var(--rose-soft);
+        }
+
+        .drawer-greeting {
+            color: var(--rose-soft);
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .logout-link {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 1500;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s;
+        }
+
+        .drawer-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        body.drawer-open {
+            overflow: hidden;
+        }
+
+        .email-btn {
+        border-top: 24px;
+        background-color: #a75f28;
+        color: white;
+        padding: 12px 18px;
+        text-decoration: none;
+        border-radius: 6px;
+        font-family: Arial, sans-serif;
+        transition: 0.3s ease;
+        }
+
+.email-btn:hover {
+  background-color: #218838;
+  transform: scale(1.05);
+}
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuToggle = document.getElementById('menuToggle');
+            const closeDrawer = document.getElementById('closeDrawer');
+            const navDrawer = document.getElementById('navDrawer');
+            const drawerOverlay = document.getElementById('drawerOverlay');
+            const body = document.body;
+
+            function openMenu() {
+                navDrawer.classList.add('active');
+                drawerOverlay.classList.add('active');
+                body.classList.add('drawer-open');
+            }
+
+            function closeMenu() {
+                navDrawer.classList.remove('active');
+                drawerOverlay.classList.remove('active');
+                body.classList.remove('drawer-open');
+            }
+
+            menuToggle.addEventListener('click', openMenu);
+            closeDrawer.addEventListener('click', closeMenu);
+            drawerOverlay.addEventListener('click', closeMenu);
+            
+            // Close menu on link click
+            const drawerLinks = document.querySelectorAll('.drawer-link');
+            drawerLinks.forEach(link => {
+                link.addEventListener('click', closeMenu);
+            });
+        });
+    </script>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% if messages %}
+        <div class="alert-container">
+            {% for message in messages %}
+            <div class="alert-item {% if message.tags == 'error' %}alert-error{% elif message.tags == 'success' %}alert-success{% else %}alert-info{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer-minimal">
+        <span style="border-top:8px;"><a href="mailto:progresscharmy@gmail.com" class="email-btn">Send us an Email</a></span>
+       <h4 style="border-top:8px; padding-top: 12px;"> Built with ❤️ By  NECTA TECH for celebrating love and connection </h4>
+       
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

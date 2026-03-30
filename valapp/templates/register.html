@@ -1,0 +1,44 @@
+{% extends 'generic.html' %}
+{% load static %}
+
+{% block title %}Register | LoveNote{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'valapp/css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <h2 class="auth-title">Create Account</h2>
+        <p class="auth-subtitle">Join us and start sending unforgettable notes</p>
+
+        <form method="POST" class="auth-form">
+            {% csrf_token %}
+            
+            {% for field in form %}
+            <div class="auth-field-wrapper">
+                <label class="auth-label">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    {% for error in field.errors %}
+                        <p class="error-text">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="btn-romantic w-full py-4 rounded-xl text-white font-bold text-lg mt-4">
+                Register Now
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p class="auth-footer-text">
+                Already have an account? 
+                <a href="{% url 'login' %}" class="auth-link">Log In</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

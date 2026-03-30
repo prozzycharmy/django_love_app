@@ -1,0 +1,181 @@
+{% extends 'generic.html' %}
+{% load static %}
+
+{% block title %}{{ link.link_type.name }} | LoveNote{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'valapp/css/messages.css' %}">
+<style>
+    .modern-form-wrapper {
+        min-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+    }
+    
+    .glass-card {
+        width: 100%;
+        max-width: 450px;
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(40px);
+        -webkit-backdrop-filter: blur(40px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 2.5rem;
+        overflow: hidden;
+        box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.5);
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    .glass-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .card-header-banner {
+        padding: 3.5rem 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .floating-shape {
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        background: white;
+        opacity: 0.1;
+        filter: blur(50px);
+        border-radius: 50%;
+        top: -50px;
+        right: -50px;
+    }
+
+    .modern-icon {
+        font-size: 3.5rem;
+        margin-bottom: 1.5rem;
+        display: inline-block;
+        filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));
+    }
+
+    .recipient-title {
+        font-family: var(--font-heading);
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 0.5rem;
+        letter-spacing: -1px;
+    }
+
+    .prompt-text {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1.1rem;
+        font-weight: 500;
+        line-height: 1.4;
+    }
+
+    .form-content-area {
+        padding: 2rem;
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    .modern-textarea {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1.5rem;
+        padding: 1.5rem;
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 400;
+        resize: none;
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+    }
+
+    .modern-textarea:focus {
+        outline: none;
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(244, 90, 117, 0.5);
+        box-shadow: 0 0 0 4px rgba(244, 90, 117, 0.1);
+    }
+
+    .modern-submit {
+        width: 100%;
+        background: white;
+        color: #1c1221;
+        padding: 1.25rem;
+        border-radius: 1.25rem;
+        font-size: 1.25rem;
+        font-weight: 800;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .modern-submit:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+    }
+
+    .modern-submit:active {
+        transform: translateY(0) scale(0.98);
+    }
+
+    .safety-footer {
+        padding: 1.5rem;
+        text-align: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="modern-form-wrapper">
+    <div class="glass-card">
+        <div class="card-header-banner" style="background: {{ link.link_type.color_gradient }}">
+            <div class="floating-shape"></div>
+            <div class="modern-icon">
+                {{ link.link_type.icon }}
+            </div>
+            <h2 class="recipient-title">@{{ link.user.get_short_name|lower }}</h2>
+            <p class="prompt-text">{{ link.link_type.prompt }}</p>
+        </div>
+
+        <div class="form-content-area">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="relative mb-6">
+                    <textarea 
+                        name="content" 
+                        class="modern-textarea" 
+                        rows="5" 
+                        placeholder="Type your anonymous message here..."
+                        required
+                    ></textarea>
+                    <div class="absolute bottom-4 right-6 text-[10px] font-black uppercase tracking-widest opacity-20 text-white pointer-events-none">
+                        Anonymous
+                    </div>
+                </div>
+                <button type="submit" class="modern-submit">
+                    Send Now 🚀
+                </button>
+            </form>
+        </div>
+        
+        <div class="safety-footer">
+            <p class="text-white/40 text-[10px] font-bold uppercase tracking-widest">
+                🔒 Fully Encrypted & 100% Anonymous
+            </p>
+        </div>
+    </div>
+    
+    <div class="mt-10 text-center">
+        <a href="{% url 'register' %}" class="inline-flex items-center text-white/60 hover:text-white transition-all text-sm font-medium gap-2">
+            Want your own link? <span class="bg-rosePrimary/20 text-rosePrimary px-3 py-1 rounded-full text-xs font-bold">Get it now</span>
+        </a>
+    </div>
+</div>
+{% endblock %}

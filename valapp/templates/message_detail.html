@@ -1,0 +1,71 @@
+{% extends 'generic.html' %}
+{% load static %}
+
+{% block title %}Anonymous Message | LoveNote{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'valapp/css/messages.css' %}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="mb-8 flex items-center justify-between">
+        <a href="{% url 'received_messages' message.link.id %}" class="btn-back">
+            ←
+        </a>
+        <span class="text-roseSoft/60 text-sm font-bold uppercase tracking-widest">Received Message</span>
+    </div>
+
+    <div id="capture-container" class="capture-card" style="background: {{ message.link.link_type.color_gradient }}">
+        <div class="capture-inner">
+            <div class="anonymous-icon-wrapper">
+                {{ message.link.link_type.icon }}
+            </div>
+            
+            <p class="text-white text-2xl font-bold leading-relaxed mb-10 max-w-sm mx-auto">
+                "{{ message.content }}"
+            </p>
+            
+            <div class="mt-4 pt-6 border-t border-white/10 w-full flex justify-between items-center text-white/40 text-xs font-bold uppercase tracking-widest">
+                <span>LoveNote App</span>
+                <span>{{ message.created_at|date:"M d, Y" }}</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-10 space-y-4">
+        <button id="download-btn" class="w-full btn-romantic py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-3">
+            <span>📸</span> Share as Image
+        </button>
+        <p class="text-center text-roseSoft/40 text-xs font-medium">
+            Generated as a PNG for easy sharing on social media
+        </p>
+    </div>
+</div>
+
+<script>
+document.getElementById('download-btn').addEventListener('click', function() {
+    const btn = this;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = 'Rendering...';
+    
+    html2canvas(document.getElementById('capture-container'), {
+        backgroundColor: null,
+        scale: 3,
+        logging: false,
+        useCORS: true,
+        borderRadius: 48
+    }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'anonymous-message-lovenote.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        btn.innerHTML = '✅ Saved to Gallery';
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+        }, 3000);
+    });
+});
+</script>
+{% endblock %}

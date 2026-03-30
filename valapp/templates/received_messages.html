@@ -1,0 +1,63 @@
+{% extends 'generic.html' %}
+{% load static %}
+
+{% block title %}Messages for {{ link.link_type.name }}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'valapp/css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div class="dashboard-header-info">
+            <a href="{% url 'dashboard' %}" class="btn-back">
+                ←
+            </a>
+            <div>
+                <h1 class="dashboard-title">{{ link.link_type.name }}</h1>
+                <p class="dashboard-subtitle">Messages received anonymously</p>
+            </div>
+        </div>
+        <div class="hidden md:block">
+            <span class="dashboard-badge">
+                {{ messages.count }} Total Messages
+            </span>
+        </div>
+    </div>
+
+    {% if messages %}
+    <div class="grid-small-cards">
+        {% for msg in messages %}
+        <a href="{% url 'message_detail' msg.id %}" class="message-inbox-card {% if not msg.is_read %}unread{% endif %}">
+            {% if not msg.is_read %}
+            <div class="unread-indicator"></div>
+            {% endif %}
+            
+            <p class="message-preview-text">
+                {{ msg.content }}
+            </p>
+            
+            <div class="message-meta">
+                <span>💌 Inbox</span>
+                <span>{{ msg.created_at|date:"M d, H:i" }}</span>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state empty-state-large">
+        <div class="empty-state-icon">🏜️</div>
+        <h2 class="link-card-title">No messages yet</h2>
+        <p class="empty-state-text">
+            Share your link on Instagram or WhatsApp to start receiving anonymous messages!
+        </p>
+        <div class="mt-8">
+            <a href="{% url 'dashboard' %}" class="btn-romantic px-10 py-3 rounded-full text-white font-bold inline-block">
+                Go to Dashboard
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
